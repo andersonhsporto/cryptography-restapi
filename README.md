@@ -37,7 +37,7 @@ Para executar o projeto, basta rodar o binário gerado:
 ## Collection do Postman
 
 A collection do Postman está disponivel no arquivo 
-[crypto-api.postman_collection.json](crypto-api.postman_collection.json).
+[criptografia.postman_collection.json](criptografia.postman_collection.json).
 Você pode importar este arquivo no Postman para testar a API.
 
 ## Metodos da API
@@ -60,7 +60,7 @@ Adiciona uma transação
 curl --location 'http://localhost:8080/transactions' \
 --header 'Content-Type: application/json' \
 --data '{
-    "userDocument": "123456789d0",
+    "userDocument": "1234567890",
     "creditCardToken": "1234 5679012 3456 ",
     "value": 1001.000000
 }'
@@ -72,7 +72,7 @@ Atualiza uma transação
 curl --location --request PATCH 'http://localhost:8080/transactions/1' \
 --header 'Content-Type: application/json' \
 --data '{
-    "userDocument": "123456789d0",
+    "userDocument": "1234567890",
     "creditCardToken": "1234 5679012 3456 ",
     "value": 1001.000000
 }'
