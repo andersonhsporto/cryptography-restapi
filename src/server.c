@@ -48,12 +48,12 @@ t_api_server    *init_server() {
 
 void send_response(int client_socket, const char *status, const char *content_type, const char *body) {
     char response[BUFFER_SIZE];
-    int content_length = strlen(body);
+    size_t content_length = strlen(body);
 
     snprintf(response, sizeof(response),
              "HTTP/1.1 %s\r\n"
              "Content-Type: %s\r\n"
-             "Content-Length: %d\r\n"
+             "Content-Length: %zu\r\n"
              "\r\n"
              "%s",
              status, content_type, content_length, body);

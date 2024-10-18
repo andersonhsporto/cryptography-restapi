@@ -1,4 +1,7 @@
 #include "api.h"
+
+#include <database.h>
+
 #include "server.h"
 
 static volatile sig_atomic_t interrupt_received = 1;
@@ -20,6 +23,8 @@ struct sigaction init_sigaction() {
 int main() {
     t_api_server *server = init_server();
     struct sigaction sa = init_sigaction();
+
+    init_database();
 
     printf("Servidor rodando na porta %d...\n", PORT);
 
