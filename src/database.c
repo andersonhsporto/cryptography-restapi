@@ -24,7 +24,7 @@ int init_database() {
     return SQLITE_OK;
 }
 
-int insert_data(unsigned char *document, unsigned char *credit_token, long value) {
+int insert_data(char *document, char *credit_token, long value) {
     sqlite3 *db;
     char *err_msg = NULL;
     int rc = sqlite3_open("database.db", &db);
@@ -207,22 +207,23 @@ int add_data(int client_socket, const char *body) {
         return return_validation_error(data, client_socket);
     }
 
-    unsigned char encrypted_user_document[SHA512_DIGEST_LENGTH];
-    unsigned char encrypted_credit_token[SHA512_DIGEST_LENGTH];
-
-    sha512_string(data->document, encrypted_user_document);
-    sha512_string(data->credit_token, encrypted_credit_token);
+    char *encrypted_user_document = sha512_string(data->document);
+    char *encrypted_credit_token = sha512_string(data->credit_token);
 
     long value = atol(data->value_str);
 
     if (insert_data(encrypted_user_document, encrypted_credit_token, value) != SQLITE_OK) {
         send_response(client_socket, "500 Internal Server Error", "application/json", "{\"error\": \"Database error\"}");
         free_data(data);
+        free(encrypted_user_document);
+        free(encrypted_credit_token);
         return SQLITE_ERROR;
     }
 
     send_response(client_socket, "201 Created", "application/json", "{\"message\": \"Transaction created\"}");
     free_data(data);
+    free(encrypted_user_document);
+    free(encrypted_credit_token);
     return SQLITE_OK;
 }
 
@@ -232,14 +233,6 @@ int patch_data(int client_socket, const char *body, long id) {
     if (!is_valid_data(data)) {
         return return_validation_error(data, client_socket);
     }
-
-    long value = atol(data->value_str);
-
-    unsigned char encrypted_user_document[SHA512_DIGEST_LENGTH];
-    unsigned char encrypted_credit_token[SHA512_DIGEST_LENGTH];
-
-    sha512_string(data->document, encrypted_user_document);
-    sha512_string(data->credit_token, encrypted_credit_token);
 
     char *query = "UPDATE transactions SET userDocument = ?, creditCardToken = ?, value = ? WHERE id = ?";
 
@@ -264,6 +257,11 @@ int patch_data(int client_socket, const char *body, long id) {
         return SQLITE_ERROR;
     }
 
+    long value = atol(data->value_str);
+
+    char *encrypted_user_document = sha512_string(data->document);
+    char *encrypted_credit_token = sha512_string(data->credit_token);
+
     sqlite3_bind_blob(res, 1, encrypted_user_document, SHA512_DIGEST_LENGTH, SQLITE_STATIC);
     sqlite3_bind_blob(res, 2, encrypted_credit_token, SHA512_DIGEST_LENGTH, SQLITE_STATIC);
     sqlite3_bind_double(res, 3, value);
@@ -277,6 +275,8 @@ int patch_data(int client_socket, const char *body, long id) {
         send_response(client_socket, "500 Internal Server Error", "application/json", "{\"error\": \"Database error\"}");
         sqlite3_finalize(res);
         sqlite3_close(db);
+        free(encrypted_user_document);
+        free(encrypted_credit_token);
         free_data(data);
         return SQLITE_ERROR;
     }
@@ -285,5 +285,7 @@ int patch_data(int client_socket, const char *body, long id) {
 
     send_response(client_socket, "200 OK", "application/json", "{\"message\": \"Transaction updated\"}");
     free_data(data);
+    free(encrypted_user_document);
+    free(encrypted_credit_token);
     return SQLITE_OK;
 }

@@ -29,7 +29,7 @@
     "DELETE FROM transactions WHERE id = %ld"
 
 int init_database();
-int insert_data(unsigned char *document, unsigned char *credit_token, long value);
+int insert_data(char *document, char *credit_token, long value);
 int fetch_data(int client_socket, long id, int is_array);
 int delete_data(int client_socket, long id);
 int add_data(int client_socket, const char *body);
