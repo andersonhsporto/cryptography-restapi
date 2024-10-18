@@ -13,7 +13,7 @@
     "id INTEGER PRIMARY KEY AUTOINCREMENT, " \
     "userDocument TEXT, " \
     "creditCardToken TEXT, "  \
-    "value REAL);"
+    "value INTEGER);"
 
 
 #define INSERT_QUERY \

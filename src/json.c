@@ -6,9 +6,9 @@ char *convert_to_json(sqlite3_stmt *res) {
         int id = sqlite3_column_int(res, 0);
         const unsigned char *name = sqlite3_column_text(res, 1);
         const unsigned char *email = sqlite3_column_text(res, 2);
-        const double value = sqlite3_column_double(res, 3);
+        const long value = (long) sqlite3_column_double(res, 3);
 
-        snprintf(json + strlen(json), sizeof(json) - strlen(json), "\"id\": %d, \"userDocument\": \"%s\", \"creditCardToken\": \"%s\", \"value\": %f", id, name, email, value);
+        snprintf(json + strlen(json), sizeof(json) - strlen(json), "\"id\": %d, \"userDocument\": \"%s\", \"creditCardToken\": \"%s\", \"value\": %ld", id, name, email, value);
     }
     strcat(json, "}");
     return strdup(json);
@@ -22,7 +22,7 @@ char *convert_to_json_array(sqlite3_stmt *res) {
         int id = sqlite3_column_int(res, 0);
         const unsigned char *name = sqlite3_column_text(res, 1);
         const unsigned char *email = sqlite3_column_text(res, 2);
-        const double value = sqlite3_column_double(res, 3);
+        const long value = (long) sqlite3_column_double(res, 3);
 
         if (first_row) {
             first_row = 0;
@@ -30,7 +30,7 @@ char *convert_to_json_array(sqlite3_stmt *res) {
             strcat(json, ",");
         }
 
-        snprintf(json + strlen(json), sizeof(json) - strlen(json), "{\"id\":%d,\"userDocument\":\"%s\",\"creditCardToken\":\"%s\",\"value\":%f}", id, name, email, value);
+        snprintf(json + strlen(json), sizeof(json) - strlen(json), "{\"id\":%d,\"userDocument\":\"%s\",\"creditCardToken\":\"%s\",\"value\":%ld}", id, name, email, value);
     }
 
     strcat(json, "]");
