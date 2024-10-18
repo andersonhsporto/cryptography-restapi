@@ -15,29 +15,28 @@ char *convert_to_json(sqlite3_stmt *res) {
 }
 
 char *convert_to_json_array(sqlite3_stmt *res) {
-    char json[BUFFER_SIZE] = "{\"transactions\": [";
-    int first = 1;
+    char json[BUFFER_SIZE] = "[";
+    int first_row = 1;
 
     while (sqlite3_step(res) == SQLITE_ROW) {
-        if (!first) {
-            strcat(json, ", ");
-        }
-        first = 0;
-
         int id = sqlite3_column_int(res, 0);
         const unsigned char *name = sqlite3_column_text(res, 1);
         const unsigned char *email = sqlite3_column_text(res, 2);
         const double value = sqlite3_column_double(res, 3);
 
-        char user[256];
-        snprintf(user, sizeof(user), "{\"id\": %d, \"userDocument\": \"%s\", \"creditCardToken\": \"%s \", \"value\": %f}", id, name, email, value);
-        strcat(json, user);
+        if (first_row) {
+            first_row = 0;
+        } else {
+            strcat(json, ",");
+        }
+
+        snprintf(json + strlen(json), sizeof(json) - strlen(json), "{\"id\":%d,\"userDocument\":\"%s\",\"creditCardToken\":\"%s\",\"value\":%f}", id, name, email, value);
     }
 
-    strcat(json, "]}");
+    strcat(json, "]");
+
     return strdup(json);
 }
-
 
 char *extract_value(const char *body, const char *key) {
     char key_with_quotes[256];

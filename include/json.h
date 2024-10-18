@@ -7,6 +7,8 @@
 #include <sqlite3.h>
 #include <ctype.h>
 
+#define INITIAL_BUFFER_SIZE 1024
+
 char *convert_to_json(sqlite3_stmt *res);
 char *convert_to_json_array(sqlite3_stmt *res);
 char *extract_value(const char *body, const char *key);
