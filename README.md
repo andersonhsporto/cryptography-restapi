@@ -98,3 +98,10 @@ Deleta uma transação
 ```bash
 curl --location --request DELETE 'http://localhost:8080/transactions/1'
 ```
+
+
+## Imagens
+
+### GET ALL
+
+![GET ALL](resources/image.png)
