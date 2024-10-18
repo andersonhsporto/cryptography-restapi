@@ -1,17 +1,18 @@
 #include "crypto.h"
 
-void sha512_string(char *string, unsigned char outputBuffer[SHA512_DIGEST_LENGTH]) {
-    EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
-    const EVP_MD *md = EVP_get_digestbyname("SHA512");
+char *sha512_string(char *string) {
+    unsigned char hash[SHA512_DIGEST_LENGTH];
 
-    if (!md) {
-        fprintf(stderr, "SHA-512 algorithm not found.\n");
-        exit(1);
+    char *output = (char *)malloc(SHA512_DIGEST_LENGTH * 2 + 1);
+    if (!output) {
+        return NULL;
     }
 
-    EVP_DigestInit_ex(mdctx, md, NULL);
-    EVP_DigestUpdate(mdctx, string, strlen(string));
-    unsigned int outputLength;
-    EVP_DigestFinal_ex(mdctx, outputBuffer, &outputLength);
-    EVP_MD_CTX_free(mdctx);
+    SHA512((unsigned char *)string, strlen(string), hash);
+    for (int i = 0; i < SHA512_DIGEST_LENGTH; i++) {
+        sprintf(output + (i * 2), "%02x", hash[i]);
+    }
+
+    output[SHA512_DIGEST_LENGTH * 2] = '\0';
+    return output;
 }

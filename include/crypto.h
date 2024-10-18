@@ -8,7 +8,5 @@
 #include <stdlib.h>
 
 
-#define SHA256_DIGEST_LENGTH 32
-
-void sha512_string(char *string, unsigned char outputBuffer[SHA512_DIGEST_LENGTH]);
+char *sha512_string(char *string);
 #endif
