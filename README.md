@@ -34,6 +34,21 @@ Para executar o projeto, basta rodar o binário gerado:
 ./crypto-api
 ```
 
+### Docker
+
+Você também pode executar o projeto utilizando o Docker. Para isso, basta rodar o comando:
+
+```bash
+sudo docker build -t crypto-api .
+```
+
+E depois:
+
+```bash
+sudo docker run -p 8080:8080 crypto-api
+```
+
+
 ## Collection do Postman
 
 A collection do Postman está disponivel no arquivo 
